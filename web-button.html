@@ -1,0 +1,96 @@
+<div class="hero-label-and-buttons">
+  <div class="hero-brand-text"><br/></div>
+        <div class="hero-btn-container">
+  <a href="/shop" class="hero-btn"><span>CLAIM YOURS</span></a>
+  <a href="/see-the-vision#top" class="hero-btn"><span>EXPLORE MORE</span></a>
+</div>
+</div>
+<style>
+    .hero-label-and-buttons {
+  position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    width: 100%;
+}
+
+.hero-brand-text {
+  color: black;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
+    display: flex
+;
+    justify-content: center;
+    padding: 0 2.5rem;
+    font-family: BB-CondBold, Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-size: 1.025rem;
+    font-weight: 900;
+    line-height: 110%;
+    letter-spacing: 1.02em;
+    text-transform: uppercase;
+}
+  .hero-btn-container {
+   position: absolute;
+    padding: 8px 40px;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+   
+  }
+
+  .hero-btn {
+   padding: 13px 21px;
+    border: 1px solid #000;
+    box-shadow: 0 4px 6px rgb(213 22 22 / 8%), 0 10px 15px rgb(0 0 0 / 59%);
+    border-radius: 0.25rem;
+    color: black !important;
+    background-color: white;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+    font-family: BB-Regular, Helvetica Neue, Helvetica, Arial, sans-serif;
+     font-weight: 500;
+    font-size: 0.85rem;
+    line-height: 130%;
+    letter-spacing: .03em;
+  }
+
+  
+  .hero-btn span {
+  display: inline-block;
+  animation: none;
+  transition: none;
+}
+    .hero-btn:hover span {
+  animation: scrollUpWrap 0.3s ease-in-out forwards;
+}
+
+@keyframes scrollUpWrap {
+  0%   { transform: translateY(0); opacity: 1; }
+  49%  { transform: translateY(-100%); opacity: 0; }
+  50%  { transform: translateY(100%); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+  @media (max-width: 768px) {
+    .hero-btn-container {
+      flex-direction: column;
+      bottom: 30px;
+    }
+
+    .hero-btn {
+      width: 80%;
+      text-align: center;
+    }
+     
+  }
+</style>
