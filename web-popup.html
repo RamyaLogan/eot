@@ -1,0 +1,191 @@
+<script>
+function initPopupLogic() {
+  const popup = document.getElementById('centralPopupOverlay');
+  const tab = document.getElementById('promoTab');
+
+  const isLoggedIn = !!document.querySelector('.o_no_autohide_item .dropdown-menu a[href*="/web/session/logout"]');
+  const hasSeenPopup = localStorage.getItem('popupShownOnce');
+  const popupClosed = localStorage.getItem('popupClosedByUser');
+  const isLoggedAndSeen = localStorage.getItem('isLoggedIn');
+  // ✅ Reset popup memory if user is logged out (so popup can reappear)
+  if (!isLoggedIn && isLoggedAndSeen) {
+    localStorage.removeItem('popupShownOnce');
+    localStorage.removeItem('popupClosedByUser');
+  }
+
+  if (isLoggedIn ) {
+    localStorage.setItem('isLoggedIn', 'true');
+    popup?.remove();
+    tab?.remove();
+    return;
+  }
+  if(popupClosed && !isLoggedIn){
+    popup.style.display = 'none';
+    tab.style.display = 'block';
+    return;
+  }
+
+  if (!hasSeenPopup) {
+    popup.style.display = 'flex';
+    localStorage.setItem('popupShownOnce', 'true');
+  } else {
+    tab.style.display = 'block';
+  }
+}
+
+function closeCentralPopup() {
+  document.getElementById('centralPopupOverlay').style.display = 'none';
+  document.getElementById('promoTab').style.display = 'block';
+  localStorage.setItem('popupClosedByUser', 'true');
+}
+
+function showCentralPopup() {
+  document.getElementById('centralPopupOverlay').style.display = 'flex';
+  document.getElementById('promoTab').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initPopupLogic, 10);
+});
+</script><div id="promoTab" class="promo-tab" onclick="showCentralPopup()" style="display: none;">
+ Claim Your Perk!
+</div><div id="centralPopupOverlay" class="popup-overlay" style="display: flex;">
+  <div class="central-popup two-column">
+    <div class="popup-left">
+      <img src="https://www.elementsoftruth.store/web/image/2076-34881d20/logo.jpg" alt="Promo" loading="lazy" style="height: 240px; max-width: 222px;">
+    </div>
+    
+    <div class="popup-right">
+      <span class="popup-close" onclick="closeCentralPopup()">×</span>
+      <h2>GRAB FREE SHIPPING</h2>
+      <p>Sign up and enjoy free shipping on your first order — plus early access to upcoming drops and exclusives.</p>
+      <p style="font-style:italic">Have a nosy in every corner of your inbox — it's our first drop, so the email might be a bit shy.</p>
+      <button onclick="window.location.href='https://www.elementsoftruth.store/web/signup'" class="popup-main-button">Yes, Count me in!</button>
+      <button class="popup-secondary-button" onclick="closeCentralPopup()">NO, I'm Good</button>
+    </div>
+  </div>
+</div>
+<style>
+/* Overlay for center modal */
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Center popup style */
+.central-popup {
+  background: white;
+  padding: 30px;
+  max-width: 693px;
+  width: 100%;
+  border-radius: 12px;
+  text-align: center;
+  position: relative;
+  animation: fadeIn 0.4s ease;
+  font-family: sans-serif;
+}
+.popup-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.popup-main-button {
+  background: black;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  width: 100%;
+  font-size: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.popup-secondary-button {
+  background: none;
+  border: none;
+  color: #666;
+  margin-top: 10px;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 13px;
+  text-align: center;
+  width: 100%
+}
+@keyframes fadeIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Sticky left-side vertical tab */
+.promo-tab {
+  position: fixed;
+  left: 0;
+  top: 40%;
+  height: 200px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  background-color: black;
+  color: white;
+  font-weight: bold;
+  padding: 10px 5px;
+  z-index: 9998;
+  cursor: pointer;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  display: none;
+}
+.two-column {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  max-width: 700px;
+  width: 90%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: fadeIn 0.4s ease;
+  font-family: sans-serif;
+}
+
+.popup-left {
+  flex: 1;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.popup-left img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+}
+
+.popup-right {
+  flex: 2;
+  padding: 30px;
+  position: relative;
+  text-align: left;
+}
+
+@media (max-width: 768px) {
+  .two-column {
+    flex-direction: column;
+  }
+  .popup-left, .popup-right {
+    flex: 1 1 100%;
+    text-align: center;
+  }
+  .popup-left img {
+    max-height: 200px;
+  }
+}
+</style>
