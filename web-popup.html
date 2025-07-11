@@ -4,30 +4,37 @@ function initPopupLogic() {
   const tab = document.getElementById('promoTab');
 
   const isLoggedIn = !!document.querySelector('.o_no_autohide_item .dropdown-menu a[href*="/web/session/logout"]');
-  const hasSeenPopup = localStorage.getItem('popupShownOnce');
-  const popupClosed = localStorage.getItem('popupClosedByUser');
   const isLoggedAndSeen = localStorage.getItem('isLoggedIn');
-  // ✅ Reset popup memory if user is logged out (so popup can reappear)
+
+  const lastSeenTimestamp = localStorage.getItem('popupLastSeenAt');
+  const popupClosed = localStorage.getItem('popupClosedByUser');
+  const popupExpiryMs = 24 * 60 * 60 * 1000;
+  const now = Date.now();
+  const expired = !lastSeenTimestamp || (now - parseInt(lastSeenTimestamp, 10)) > popupExpiryMs;
+
+  // Reset if user logged out
   if (!isLoggedIn && isLoggedAndSeen) {
-    localStorage.removeItem('popupShownOnce');
+    localStorage.removeItem('popupLastSeenAt');
     localStorage.removeItem('popupClosedByUser');
   }
 
-  if (isLoggedIn ) {
+  if (isLoggedIn) {
     localStorage.setItem('isLoggedIn', 'true');
     popup?.remove();
     tab?.remove();
     return;
   }
-  if(popupClosed && !isLoggedIn){
+
+  if (!isLoggedIn && popupClosed && !expired) {
     popup.style.display = 'none';
     tab.style.display = 'block';
     return;
   }
 
-  if (!hasSeenPopup) {
+  if (expired) {
     popup.style.display = 'flex';
-    localStorage.setItem('popupShownOnce', 'true');
+    localStorage.setItem('popupLastSeenAt', now.toString());
+    localStorage.removeItem('popupClosedByUser');
   } else {
     tab.style.display = 'block';
   }
@@ -47,7 +54,8 @@ function showCentralPopup() {
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(initPopupLogic, 10);
 });
-</script><div id="promoTab" class="promo-tab" onclick="showCentralPopup()" style="display: none;">
+</script>
+<div id="promoTab" class="promo-tab" onclick="showCentralPopup()" style="display: none;">
  Claim Your Perk!
 </div><div id="centralPopupOverlay" class="popup-overlay" style="display: flex;">
   <div class="central-popup two-column">
