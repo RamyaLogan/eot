@@ -21,30 +21,37 @@ function initPopupLogicPh() {
   const tab = document.getElementById('promoTab-ph');
 
   const isLoggedIn = !!document.querySelector('.o_no_autohide_item .dropdown-menu a[href*="/web/session/logout"]');
-  const hasSeenPopup = localStorage.getItem('popupShownOnce-ph');
-  const popupClosed = localStorage.getItem('popupClosedByUser-ph');
   const isLoggedAndSeen = localStorage.getItem('isLoggedIn-ph');
-  // ✅ Reset popup memory if user is logged out (so popup can reappear)
+
+  const lastSeenTimestamp = localStorage.getItem('popupLastSeenAt-ph');
+  const popupClosed = localStorage.getItem('popupClosedByUser-ph');
+  const popupExpiryMs = 24 * 60 * 60 * 1000; // 24 hours
+  const now = Date.now();
+  const expired = !lastSeenTimestamp || (now - parseInt(lastSeenTimestamp, 10)) > popupExpiryMs;
+
+  // Reset popup state if user logged out
   if (!isLoggedIn && isLoggedAndSeen) {
-    localStorage.removeItem('popupShownOnce-ph');
+    localStorage.removeItem('popupLastSeenAt-ph');
     localStorage.removeItem('popupClosedByUser-ph');
   }
 
-  if (isLoggedIn ) {
+  if (isLoggedIn) {
     localStorage.setItem('isLoggedIn-ph', 'true');
     popup?.remove();
     tab?.remove();
     return;
   }
-  if(popupClosed && !isLoggedIn){
+
+  if (!isLoggedIn && popupClosed && !expired) {
     popup.style.display = 'none';
     tab.style.display = 'block';
     return;
   }
 
-  if (!hasSeenPopup) {
+  if (expired) {
     popup.style.display = 'flex';
-    localStorage.setItem('popupShownOnce-ph', 'true');
+    localStorage.setItem('popupLastSeenAt-ph', now.toString());
+    localStorage.removeItem('popupClosedByUser-ph');
   } else {
     tab.style.display = 'block';
   }
